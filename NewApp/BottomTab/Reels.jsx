@@ -52,7 +52,7 @@ const ReelsScreen = ({ navigation }) => {
           <View style={{flex: 0.925}}></View>
           <View style={{alignContent: 'space-around'}}>
             <View style={{flexDirection: 'row', alignItems: 'center',}}>
-              <Image style={{height: 30, width: 30, borderRadius: 15, alignSelf: 'center', marginLeft: 17}} source={require('../assets/mine.jpeg')}/>
+              <Image style={{height: 30, width: 30, borderRadius: 15, alignSelf: 'center', marginLeft: 17}} source={require('../assets/reelbg.jpg')}/>
               <Text style={{color: '#fff', fontWeight: 'bold', paddingLeft: 5}}>_jaaaayy_7</Text>
             </View>
             <Text style={{color: '#fff', paddingLeft: 17, fontSize: 15, paddingTop: 7}}>hey whatsup guys</Text>

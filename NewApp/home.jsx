@@ -5,25 +5,19 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { StyleSheet,Text, StatusBar as RNStatusBar, View, Dimensions, ScrollView,Image, Platform, TouchableOpacity, Easing, } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Badge, withBadge, Divider,ListItem } from 'react-native-elements';
-import { useFonts } from 'expo-font';
-import ProfileoScreen from './BottomTab/profile';
 import { BottomSheet } from 'react-native-btr';
-import InboxScreen from './inbox';
 import NotficationScreen from './BottomTab/Notification';
-import ReelsScreen from './BottomTab/Reels';
 import { LinearGradient } from 'expo-linear-gradient';
 import SearchScreen from './BottomTab/search';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import CameraScreen from './camera';
 import ProfileSc from './BottomTab/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PostScreen from './BottomTab/PostScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -346,16 +340,7 @@ const TopTab = createMaterialTopTabNavigator();
     );
     
   };
-  const PostScreen = ({ navigation }) => {
-    return(
-      <View style={styles.container}>
-         <Text style={styles.texts}>Your are in PostScreen</Text>
-         {/* <TouchableOpacity onPress={() => navigation.navigate('HomeTab')}>
-           <Text>new tab test</Text>
-         </TouchableOpacity> */}
-      </View>
-    );
-  };
+  
 const SuggestedForYou = () => {
   const suggestedAcc = [
     {image: require('./assets/reelbg.jpg'), username: 'jaaayyyyy', follwedby: 'wnjefnjed'},
