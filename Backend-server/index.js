@@ -1,10 +1,7 @@
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
-// const hostname = '192.168.0.102';
-const hostname = '192.168.0.103';
-// const hostname ='10.191.18.90';
-// const hostname = '192.168.0.167';
+const hostname = 'your ip';
 const port = 3000;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
