@@ -48,7 +48,7 @@ const PostScreen = ({ navigation }) => {
         const token = await AsyncStorage.getItem("token")
         // setUsername(token)
       
-        fetch('http://192.168.0.103:3000/', { //192.168.0.102
+        fetch('http://yourip:3000/', { 
           headers: new Headers({
             Authorization:"Bearer "+token
           })
@@ -80,7 +80,7 @@ const PostScreen = ({ navigation }) => {
       }
     };
   const submitPost = async() => {
-    fetch(`http://192.168.0.103:3000/uploads/posts/${username}`, {
+    fetch(`http://yourip:3000/uploads/posts/${username}`, {
       method: "POST",
       headers: new Headers({
         'Content-Type': 'application/json'
