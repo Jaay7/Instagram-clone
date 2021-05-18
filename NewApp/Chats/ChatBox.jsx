@@ -5,6 +5,7 @@ import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIc
 import Feather from 'react-native-vector-icons/Feather';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { yourip } from '../helpers/keys'
 
 const ChatsScreen = ({route, navigation}) => {
   const {username, newPerson} = route.params;
@@ -18,7 +19,7 @@ const ChatsScreen = ({route, navigation}) => {
       const token = await AsyncStorage.getItem("token")
       // setUsername(token)
     
-      fetch('http://192.168.0.103:3000/', { //192.168.0.102
+      fetch(`http://${yourip}:3000/`, { 
         headers: new Headers({
           Authorization:"Bearer "+token
         })
@@ -34,7 +35,7 @@ const ChatsScreen = ({route, navigation}) => {
   const [propic, setPropic] = useState(null);
   useEffect(() => {
     async function getdata() {
-      fetch(`http://192.168.0.103:3000/othersprofile/${username}`, { //192.168.0.102
+      fetch(`http://${yourip}:3000/othersprofile/${username}`, { 
         headers: {
           'Content-Type': 'application/json'
         },
@@ -49,7 +50,7 @@ const ChatsScreen = ({route, navigation}) => {
   }, []);
   useEffect(() => {
     async function getChats() {
-      fetch(`http://192.168.0.103:3000/chats/receivemessage/${currentUser}/${username}`, {
+      fetch(`http://${yourip}:3000/chats/receivemessage/${currentUser}/${username}`, {
         method: "GET"
       })
       .then(res => res.json())
@@ -66,7 +67,7 @@ const ChatsScreen = ({route, navigation}) => {
   // const [isNew, setNew] = useState(newPerson);
   const [sendVisible, setSendVisible] = useState(true);
   const sendMessage = () => {
-    fetch('http://192.168.0.103:3000/chats/sendmessage', {
+    fetch(`http://${yourip}/chats/sendmessage`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'

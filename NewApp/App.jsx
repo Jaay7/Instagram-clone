@@ -38,7 +38,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MainScreen from './MainScreen';
 import UsernameScreen from './SignupScreens/username';
 import PasswordScreen from './SignupScreens/password';
-
+import { yourip } from './helpers/keys'
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -101,7 +101,7 @@ const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const sendCreds = () => {
-    fetch("http://192.168.0.103:3000/signin", {
+    fetch(`http://${yourip}:3000/signin`, {
     method: "POST",
     headers: {
       'Content-Type': 'application/json'

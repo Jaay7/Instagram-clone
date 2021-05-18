@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-
+import { yourip } from './helpers/keys'
 const EditProfileScreen = ({route, navigation}) => {
   
   const [name, setName] = useState(name);
@@ -52,7 +52,7 @@ const EditProfileScreen = ({route, navigation}) => {
       const token = await AsyncStorage.getItem("token")
       // setUsername(token)
     
-      fetch('http://192.168.0.103:3000/', {
+      fetch(`http://${yourip}:3000/`, {
         headers: new Headers({
           Authorization:"Bearer "+token
         })
@@ -70,7 +70,7 @@ const EditProfileScreen = ({route, navigation}) => {
   }, []);
   const submitProfile = async() => {
     const token = await AsyncStorage.getItem("token")
-    fetch('http://192.168.0.103:3000/updateprofile', {
+    fetch(`http://${yourip}:3000/updateprofile`, {
       method: "POST",
       headers: new Headers({
         Authorization:"Bearer "+token,

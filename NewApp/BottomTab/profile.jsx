@@ -22,6 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Modal } from 'react-native';
 import { BlurView } from 'expo-blur';
 import PostsScreen from '../profile/PostsScreen'
+import {yourip} from '../helpers/keys'
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -166,7 +167,7 @@ const ProfileoScreen = ({ navigation }) => {
         const token = await AsyncStorage.getItem("token")
         // setUsername(token)
       
-        fetch('http://192.168.0.103:3000/', { //192.168.0.102
+        fetch(`http://${yourip}:3000/`, { 
           headers: new Headers({
             Authorization:"Bearer "+token
           })
@@ -187,7 +188,7 @@ const ProfileoScreen = ({ navigation }) => {
     }, [username]);
     useEffect(() => {
       async function getdata() {
-        fetch(`http://192.168.0.103:3000/uploads/nofposts/${username}`, { //192.168.0.102
+        fetch(`http://${yourip}:3000/uploads/nofposts/${username}`, { 
           method: "GET"
         })
         .then(res => res.json())
@@ -349,7 +350,7 @@ const GridPhotosScreen = ({navigation, username}) => {
   const [ allPosts, setAllPosts ] = useState(allPosts);
   useEffect(() => {
     async function getdata() {
-      fetch(`http://192.168.0.103:3000/uploads/posts/${username}`, { //192.168.0.102
+      fetch(`http://${yourip}:3000/uploads/posts/${username}`, { 
         method: "GET"
       })
       .then(res => res.json())

@@ -12,13 +12,13 @@ import Svg, {Use, Image,} from 'react-native-svg';
 import { useFonts } from 'expo-font';
 import Signup from '../helpers/auths';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { yourip } from '../helpers/keys'
 const SignupScreen = ({ route, navigation }) => {
 
     const { username, password } = route.params;
 
     const sendCred = () => {
-      fetch("http://192.168.0.103:3000/signup", {
+      fetch(`http://${yourip}:3000/signup`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

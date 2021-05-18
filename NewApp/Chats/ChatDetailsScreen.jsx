@@ -3,7 +3,7 @@ import { StyleSheet,Text, TouchableHighlight, View, Dimensions, ImageBackground,
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { RadioButton, Switch } from 'react-native-paper';
 import { Divider } from 'react-native-elements';
-
+import { yourip } from '../helpers/keys'
 const ChatDetailsScreen = ({route, navigation}) => {
   const {username} = route.params;
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
@@ -14,7 +14,7 @@ const ChatDetailsScreen = ({route, navigation}) => {
   const [name, setName] = useState('');
   useEffect(() => {
     async function getdata() {
-      fetch(`http://192.168.0.103:3000/othersprofile/${username}`, { //192.168.0.102
+      fetch(`http://${yourip}:3000/othersprofile/${username}`, { 
         headers: {
           'Content-Type': 'application/json'
         },

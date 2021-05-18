@@ -18,7 +18,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import ProfileSc from './BottomTab/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PostScreen from './BottomTab/PostScreen';
-
+import { yourip } from './helpers/keys';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
         const token = await AsyncStorage.getItem("token")
         // setUsername(token)
       
-        fetch('http://192.168.0.103:3000/', { //192.168.0.102
+        fetch(`http://${yourip}:3000/`, { 
           headers: new Headers({
             Authorization:"Bearer "+token
           })

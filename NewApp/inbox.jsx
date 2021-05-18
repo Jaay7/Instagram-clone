@@ -13,7 +13,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { createDrawerNavigator, } from '@react-navigation/drawer';
 import { SafeAreaView } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { yourip } from './helpers/keys';
 const Tab = createMaterialTopTabNavigator();
 
 const InboxScreen = ({ navigation }) => {
@@ -126,7 +126,7 @@ const ChatTab = ({navigation}) => {
       const token = await AsyncStorage.getItem("token")
       // setUsername(token)
     
-      fetch('http://192.168.0.103:3000/', { //192.168.0.102
+      fetch(`http://${yourip}:3000/`, { 
         headers: new Headers({
           Authorization:"Bearer "+token
         })
@@ -142,7 +142,7 @@ const ChatTab = ({navigation}) => {
 
   useEffect(() => {
     async function getChats() {
-      fetch(`http://192.168.0.103:3000/chats/all/${currentUser}`, {
+      fetch(`http://${yourip}:3000/chats/all/${currentUser}`, {
         method: "GET"
       })
       .then(res => res.json())

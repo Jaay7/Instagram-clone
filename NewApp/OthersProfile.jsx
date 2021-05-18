@@ -9,7 +9,7 @@ import { Divider,ListItem } from 'react-native-elements';
 import { StyleSheet,Text, View,FlatList, ScrollView, Dimensions, Platform, Image, TouchableOpacity, StatusBar as RNStatusBar } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-
+import { yourip } from './helpers/keys';
 const Tab = createMaterialTopTabNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -35,7 +35,7 @@ const OthersProfileScreen = ({ route, navigation }) => {
 };
   useEffect(() => {
     async function getdata() {
-      fetch(`http://192.168.0.103:3000/othersprofile/${username}`, { //192.168.0.102
+      fetch(`http://${yourip}:3000/othersprofile/${username}`, { 
         method: "GET"
       })
       .then(res => res.json())
@@ -271,7 +271,7 @@ const SuggestedForYou = () => {
   const [ allUsers, setAllUsers ] = useState(allUsers);
   useEffect(() => {
     async function getdata() {
-      fetch('http://192.168.0.167:3000/allusers', { //192.168.0.102
+      fetch(`http://${yourip}:3000/allusers`, { 
         headers: {
           'Content-Type': 'application/json'
         },

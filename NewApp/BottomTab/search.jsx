@@ -16,7 +16,7 @@ import ExploreScreen from '../Explore';
 import RecomendedSearchesScreen from '../RecSearches';
 import { Keyboard } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-
+import { yourip } from '../helpers/keys'
 const Stack = createStackNavigator();
 
 const SearchScreen = ({navigation}) => {
@@ -181,7 +181,7 @@ const Search = ({navigation}) => {
     setClearBtn(!clearBtn);
   }
   const sendCred = () => {
-    fetch(`http://192.168.0.103:3000/searchresult/${search}`, {
+    fetch(`http://${yourip}:3000/searchresult/${search}`, {
       headers: {
         'Content-Type': 'application/json'
       },

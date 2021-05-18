@@ -11,7 +11,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PrivacyScreen from './settingsTypes/privacy';
 import SecurityScreen from './settingsTypes/security';
 import NotificationSettingsScreen from './settingsTypes/NotificationSettings';
-import { Signout } from './helpers/auths';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();

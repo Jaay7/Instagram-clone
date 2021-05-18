@@ -12,7 +12,7 @@ import Svg, {Use, Image,} from 'react-native-svg';
 import { useFonts } from 'expo-font';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
+import { yourip } from '../helpers/keys'
 const Tab = createMaterialTopTabNavigator();
 
 const EmailPhoneScreen = ({ route, navigation }) => {
@@ -55,7 +55,7 @@ const EmailTab = ({route, navigation}) => {
     const [email, setEmail] = useState('');
     const sendCred = () => {
       if(email !== '') {
-        fetch("http://192.168.0.103:3000/signup", {
+        fetch(`http://${yourip}:3000/signup`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'

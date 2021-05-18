@@ -58,10 +58,10 @@ const FollowersTab = () => {
   const [search, setSearch] = useState('');
 
   const followersPeople = [
-    {username: 'nandini_chow...', name: 'Nandini Korr...', propic: require('../assets/reelbg.jpg')},
+    {username: 'nandini_chow...', name: 'Nandini.k', propic: require('../assets/reelbg.jpg')},
     {username: 'sahithivepuri', name: 'Sahithi.v', propic: require('../assets/reelbg.jpg')},
-    {username: 'nandini_', name: 'Nandini Banda', propic: require('../assets/reelbg.jpg')},
-    {username: 'sahithi_', name: 'Sahithi Banda', propic: require('../assets/reelbg.jpg')},
+    {username: 'nandini_', name: 'srgdsfg', propic: require('../assets/reelbg.jpg')},
+    {username: 'sahithi_', name: 'dhgdfbg', propic: require('../assets/reelbg.jpg')},
     {username: 'jaayyyyy', name: 'jjjjaaayyyy', propic: require('../assets/reelbg.jpg')},
   ];
 
@@ -127,10 +127,10 @@ const FollowersTab = () => {
 const FollowingTab = () => {
   const [search, setSearch] = useState('');
   const followingPeople = [
-    {username: 'nandini_chow...', name: 'Nandini Korr...', propic: require('../assets/reelbg.jpg')},
+    {username: 'nandini_chow...', name: 'Nandini.k', propic: require('../assets/reelbg.jpg')},
     {username: 'sahithivepuri', name: 'Sahithi.v', propic: require('../assets/reelbg.jpg')},
-    {username: 'nandini_', name: 'Nandini Banda', propic: require('../assets/reelbg.jpg')},
-    {username: 'sahithi_', name: 'Sahithi Banda', propic: require('../assets/reelbg.jpg')},
+    {username: 'nandini_', name: 'rtghrth', propic: require('../assets/reelbg.jpg')},
+    {username: 'sahithi_', name: 'ryjrthjrt', propic: require('../assets/reelbg.jpg')},
     {username: 'jaayyyyy', name: 'jjjjaaayyyy', propic: require('../assets/reelbg.jpg')},
   ];
 

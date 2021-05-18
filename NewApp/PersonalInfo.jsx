@@ -6,7 +6,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { yourip } from './helpers/keys';
 const PersonalInfoScreen = ({navigation}) => {
   
   const [email, setEmail] = useState(email);
@@ -18,7 +18,7 @@ const PersonalInfoScreen = ({navigation}) => {
       const token = await AsyncStorage.getItem("token")
       // setUsername(token)
     
-      fetch('http://192.168.0.103:3000/', {
+      fetch(`http://${yourip}:3000/`, {
         headers: new Headers({
           Authorization:"Bearer "+token
         })

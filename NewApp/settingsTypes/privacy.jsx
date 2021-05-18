@@ -7,7 +7,7 @@ import { RadioButton, Switch } from 'react-native-paper';
 import { Divider } from 'react-native-elements';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import {yourip} from '../helpers/keys'
 const PrivacyScreen = ({navigation}) => {
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
   const isPrivate = !isSwitchOn;
@@ -16,7 +16,7 @@ const PrivacyScreen = ({navigation}) => {
       const token = await AsyncStorage.getItem("token")
       // setUsername(token)
     
-      fetch('http://192.168.0.103:3000/', { //192.168.0.102
+      fetch(`http://${yourip}:3000/`, { 
         headers: new Headers({
           Authorization:"Bearer "+token
         })
@@ -33,7 +33,7 @@ const PrivacyScreen = ({navigation}) => {
   const onToggleSwitch = async() => {
     setIsSwitchOn(!isSwitchOn);
     const token = await AsyncStorage.getItem("token")
-    fetch('http://192.168.0.103:3000/setAccType', {
+    fetch(`http://${yourip}:3000/setAccType`, {
       method: "POST",
       headers: new Headers({
         Authorization:"Bearer "+token,
