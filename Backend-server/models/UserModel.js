@@ -53,14 +53,15 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  followers: {
-    type: Number,
-    default: 0,
-  },
-  following: {
-    type: Number,
-    default: 0,
-  },
+  followers: [{
+    personName: String,
+  }],
+  following: [{
+    personName: String,
+  }],
+  followRequests:[{
+    personName: String,
+  }],
   posts: {
     type: Number,
     default: 0,

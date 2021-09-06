@@ -5,6 +5,7 @@ const { jwtkey } = require('../keys');
 const router = express.Router();
 const User = mongoose.model('User');
 const requireToken = require('../middleware/requireToken');
+const Posts = mongoose.model('Posts');
 
 
 router.post('/signup', async (req, res) => {
@@ -100,7 +101,11 @@ router.get('/othersprofile/:username', async(req, res) => {
     username: result.username,
     profilepic: result.profilepic,
     name: result.name,
-    bio: result.bio
+    bio: result.bio,
+    private: result.private,
+    followers: result.followers.length,
+    following: result.following.length,
+    posts: result.posts
   })
 })
 
@@ -110,13 +115,93 @@ router.get('/allusers', async(req, res) => {
     allUsers
   })
 })
-// router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-//     res.json({
-//         user: {
-//             email: req.user.email,
-//             token: req.user.jwtkey
-//         }
-//     })
-// })
+
+router.get('/followers/:username', async(req, res) => {
+  const currentuser = await User.findOne({username: req.params.username})
+  const allUsers = await User.find({})
+  let arr = currentuser.followers
+  var props = ['_id', 'name', 'personName', 'username', 'profilepic', 'private'];
+
+  var result = allUsers.filter(function(o1){
+    return arr.some(function(o2){
+      return o1.username === o2.personName;
+    });
+  }).map(function(o){
+    return props.reduce(function(newo, name){
+      newo[name] = o[name];
+      return newo;
+    }, {});
+  });
+  res.send({
+    followers: result
+  })
+})
+
+router.get('/following/:username', async(req, res) => {
+  const currentuser = await User.findOne({username: req.params.username})
+  const allUsers = await User.find({})
+  let arr = currentuser.following
+  var props = ['_id', 'name', 'personName', 'username', 'profilepic', 'private'];
+
+  var result = allUsers.filter(function(o1){
+    return arr.some(function(o2){
+      return o1.username === o2.personName;
+    });
+  }).map(function(o){
+    return props.reduce(function(newo, name){
+      newo[name] = o[name];
+      return newo;
+    }, {});
+  });
+  res.send({
+    following: result
+  })
+})
+
+router.get('/followRequests/:username', async(req, res) => {
+  const currentuser = await User.findOne({username: req.params.username})
+  const allUsers = await User.find({})
+  if(currentuser.private === true) {
+    let arr = currentuser.followRequests
+    var props = ['_id', 'name', 'personName', 'username', 'profilepic', 'private'];
+
+    var result = allUsers.filter(function(o1){
+      return arr.some(function(o2){
+        return o1.username === o2.personName;
+      });
+    }).map(function(o){
+      return props.reduce(function(newo, name){
+        newo[name] = o[name];
+        return newo;
+      }, {});
+    });
+    res.send({
+      followRequests: result
+    })
+  }
+  else {
+    res.send({
+      message: "your account is not private"
+    })
+  }
+})
+
+const arr = [
+  {
+    "id": 1,
+    "name": "afvfd"
+  },
+  {
+    "id": 2,
+    "name": "aesgd"
+  }
+]
+router.get('/test2', async(req, res) => {
+  const ids = req.query.ids
+  const result = arr.filter(ar => ar.id == ids)
+  res.send({
+    result
+  })
+})
 
 module.exports = router

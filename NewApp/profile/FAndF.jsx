@@ -7,6 +7,9 @@ import { Divider } from 'react-native-elements';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { BottomSheet } from 'react-native-btr';
 import { RadioButton, Switch } from 'react-native-paper';
+// import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { yourip } from '../helpers/keys';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -56,15 +59,48 @@ export default FAndFScreen;
 
 const FollowersTab = () => {
   const [search, setSearch] = useState('');
-
-  const followersPeople = [
-    {username: 'nandini_chow...', name: 'Nandini.k', propic: require('../assets/reelbg.jpg')},
-    {username: 'sahithivepuri', name: 'Sahithi.v', propic: require('../assets/reelbg.jpg')},
-    {username: 'nandini_', name: 'srgdsfg', propic: require('../assets/reelbg.jpg')},
-    {username: 'sahithi_', name: 'dhgdfbg', propic: require('../assets/reelbg.jpg')},
-    {username: 'jaayyyyy', name: 'jjjjaaayyyy', propic: require('../assets/reelbg.jpg')},
-  ];
-
+  const [ username, setUsername] = useState('')
+  const [ followers, setFollowers ] = useState(followers);
+  useEffect(() => {
+    async function getdata() {
+      const token = await AsyncStorage.getItem("token")
+      fetch(`http://${yourip}:3000/`, {
+        headers: new Headers({
+          Authorization: "Bearer "+token
+        })
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setUsername(data.username)
+      })
+    }
+    getdata();
+  }, [username])
+  useEffect(() => {
+    async function getdata() {
+      fetch(`http://${yourip}:3000/followers/${username}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setFollowers(data.followers)
+      })
+    }
+    getdata();
+  }, [username])
+  const removeFollower = ({currentuser, otheruser}) => {
+    fetch(`http://${yourip}:3000/removefollower/${currentuser}/${otheruser}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then((data) => console.log(data))
+    .catch(err => console.log(err))
+  }
   return(
     <ScrollView style={{backgroundColor: '#fff'}}>
       <View style={styles.inputFields}>
@@ -77,8 +113,6 @@ const FollowersTab = () => {
           placeholderTextColor="#b1b1b1"
         />
       </View>
-      <Text>FollowersTab</Text>
-      <Divider style={{backgroundColor: '#a8a8a8'}}/>
       <View>
         <Text style={styles.heading}>Categories</Text>
         <View style={styles.item}>
@@ -99,10 +133,11 @@ const FollowersTab = () => {
       <Divider style={{backgroundColor: '#a8a8a8'}}/>
       <Text style={styles.heading}>All Followers</Text>
       <View>
-        {followersPeople.map((index) => {
+      {followers !== undefined ? (
+        followers.map((index) => {
           return(
             <View key={index.username} style={{flexDirection: 'row', flex: 1, alignItems: 'center', padding: 7, marginLeft: 10, paddingRight: 20, width: Dimensions.get('window').width}}>
-              <Image source={index.propic} style={{height: 60, width: 60, borderRadius: 30, borderWidth: 1, borderColor: '#727272'}} />
+              <Image source={{uri: index.profilepic}} style={{height: 60, width: 60, borderRadius: 30, borderWidth: 1, borderColor: '#727272'}} />
               <View style={{flexDirection: 'column', padding: 10, overflow: 'hidden'}}>
                 <View style={{flexDirection: 'row'}}>
                   <Text>{index.username}</Text>
@@ -113,12 +148,15 @@ const FollowersTab = () => {
                 <Text style={{color: '#b4b4b4'}}>{index.name}</Text>
               </View>
               <View style={{flex: 1}}></View>
-              <TouchableOpacity style={[styles.button,{width: 83}]}>
+              <TouchableOpacity style={[styles.button,{width: 83}]} onPress={() => {console.log(index.username); removeFollower(username, index.username)}}>
                 <Text style={{fontWeight: 'bold', }}>Remove</Text>
               </TouchableOpacity>
             </View>
           )
-        })}
+        })) : (
+          <></>
+        )
+      }
       </View>
     </ScrollView>
   )
@@ -126,14 +164,49 @@ const FollowersTab = () => {
 
 const FollowingTab = () => {
   const [search, setSearch] = useState('');
-  const followingPeople = [
-    {username: 'nandini_chow...', name: 'Nandini.k', propic: require('../assets/reelbg.jpg')},
-    {username: 'sahithivepuri', name: 'Sahithi.v', propic: require('../assets/reelbg.jpg')},
-    {username: 'nandini_', name: 'rtghrth', propic: require('../assets/reelbg.jpg')},
-    {username: 'sahithi_', name: 'ryjrthjrt', propic: require('../assets/reelbg.jpg')},
-    {username: 'jaayyyyy', name: 'jjjjaaayyyy', propic: require('../assets/reelbg.jpg')},
-  ];
+  const [ username, setUsername] = useState('')
+  const [ following, setFollowing ] = useState(following);
+  useEffect(() => {
+    async function getdata() {
+      const token = await AsyncStorage.getItem("token")
+      fetch(`http://${yourip}:3000/`, {
+        headers: new Headers({
+          Authorization: "Bearer "+token
+        })
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setUsername(data.username)
+      })
+    }
+    getdata();
+  }, [username])
+  useEffect(() => {
+    async function getdata() {
+      fetch(`http://${yourip}:3000/following/${username}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setFollowing(data.following)
+      })
+    }
+    getdata();
+  }, [username])
 
+  const unfollow = ({currentUser, otheruser}) => {
+    fetch(`http://${yourip}:3000/unfollow/${currentUser}/${otheruser}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
+  }
   const [visible, setVisible] = useState(false);
     const toggleBottomNavigationView = () => {
         //Toggling the visibility state of the bottom sheet
@@ -191,22 +264,27 @@ const FollowingTab = () => {
         </TouchableHighlight>
       </View>
       <View>
-        {followingPeople.map((index) => {
+      {following !== undefined ? (
+        following.map((index) => {
           return(
             <View key={index.username} style={{flexDirection: 'row', flex: 1, alignItems: 'center', padding: 7, marginLeft: 10, width: Dimensions.get('window').width}}>
-              <Image source={index.propic} style={{height: 60, width: 60, borderRadius: 30, borderWidth: 1, borderColor: '#727272'}} />
+              <Image source={{uri: index.profilepic}} style={{height: 60, width: 60, borderRadius: 30, borderWidth: 1, borderColor: '#727272'}} />
               <View style={{flexDirection: 'column', padding: 10, overflow: 'hidden'}}>
                 <Text>{index.username}</Text>
                 <Text style={{color: '#b4b4b4'}}>{index.name}</Text>
               </View>
               <View style={{flex: 1}}></View>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity style={styles.button} onPress={() => {unfollow(username, index.username)}}>
                 <Text style={{fontWeight: 'bold', }}>Following</Text>
               </TouchableOpacity>
               <MaterialComunityIcons name="dots-vertical" color='#727272' size={28} style={{paddingRight: 10}}  />
             </View>
           )
-        })}
+        })) : (
+          <>
+          <Text>sfddf</Text></>
+        )
+      }
       </View>
       <BottomSheet
         visible={visible}

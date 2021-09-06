@@ -33,7 +33,6 @@ import FAndFScreen from './profile/FAndF';
 import ReelsScreen from './BottomTab/Reels';
 import ArchiveScreen from './SideDrawer/Archive';
 import LoadingScreen from './LoadingScreen'
-import Signin from './helpers/auths'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();

@@ -1,16 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState, useEffect } from 'react';
 import 'react-native-gesture-handler';
-import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { StyleSheet,Text, TextInput, View, ScrollView, Dimensions, Platform, Alert,TouchableOpacity, StatusBar as RNStatusBar } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Button } from '@material-ui/core';
-import Svg, {Use, Image,} from 'react-native-svg';
-import { useFonts } from 'expo-font';
-import Signup from '../helpers/auths';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { yourip } from '../helpers/keys'
 const SignupScreen = ({ route, navigation }) => {

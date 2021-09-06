@@ -10,11 +10,13 @@ import { StyleSheet,Text, View,FlatList, ScrollView, Dimensions, Platform, Image
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { yourip } from './helpers/keys';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Tab = createMaterialTopTabNavigator();
 const Drawer = createDrawerNavigator();
 
 const OthersProfileScreen = ({ route, navigation }) => {
   const {username} = route.params;
+  const [ currentUser, setCurrentUser ] = useState('')
   const [propic, setPropic] = useState(null);
   const [ouname, setOuname] = useState('');
   const [name, setName] = useState('');
@@ -24,6 +26,8 @@ const OthersProfileScreen = ({ route, navigation }) => {
   const [ isPrivate, setIsPrivate ] = useState(false);
   const [ followers, setFollowers ] = useState(followers);
   const [ following, setFollowing ] = useState(following);
+  const [ followingList, setFollowingList ] = useState(followingList)
+  const [ followReqList, setFollowReqList ] = useState(followReqList)
   const [ posts, setPosts ] = useState(posts);
   const toggleBottomNavigationView = () => {
       //Toggling the visibility state of the bottom sheet
@@ -32,7 +36,23 @@ const OthersProfileScreen = ({ route, navigation }) => {
   const toggleBNavView = () => {
     //Toggling the visibility state of the bottom sheet
     setBVisible(!BVisible);
-};
+  };
+  useEffect(() => {
+    async function getdata() {
+      const token = await AsyncStorage.getItem("token")
+      fetch(`http://${yourip}:3000/`, {
+        headers: new Headers({
+          Authorization: "Bearer "+token
+        })
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setCurrentUser(data.username)
+      })
+    }
+    getdata();
+  }, [followingList])
+
   useEffect(() => {
     async function getdata() {
       fetch(`http://${yourip}:3000/othersprofile/${username}`, { 
@@ -52,7 +72,58 @@ const OthersProfileScreen = ({ route, navigation }) => {
       })
     }
     getdata();
-  }, [username]);
+  }, [followingList]);
+
+  useEffect(() => {
+    async function getdata() {
+      fetch(`http://${yourip}:3000/following/${currentUser}`, {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setFollowingList(data.following);
+      })
+    }
+    getdata();
+  }, [currentUser])
+
+  useEffect(() => {
+    async function getdata() {
+      fetch(`http://${yourip}:3000/followRequests/${username}`, {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setFollowReqList(data.followRequests);
+      })
+    }
+    getdata();
+  }, [currentUser])
+
+  var isFollowing = followingList !== undefined ? followingList.map((index) => index.username).includes(username) : false
+  var isRequested = followReqList !== undefined ? followReqList.map((index) => index.username).includes(currentUser) : false
+  const sendFollow = () => {
+    fetch(`http://${yourip}:3000/sendfollow/${currentUser}/${username}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then((data) => {
+      console.log(data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+  
   const BottomSheetList = [
     { screen: 'Camera', title: 'Report...', },
     { screen: 'Camera', title: 'Block', },
@@ -62,208 +133,219 @@ const OthersProfileScreen = ({ route, navigation }) => {
     { screen: 'Camera', title: 'Send Message', },
     { screen: 'Camera', title: 'Share this Profile', },
   ];
-    const list = [
-      {
-        title: 'Story',
-        icon: 'keyboard-arrow-right'
-      },
-      {
-        title: 'Story Highlight',
-        icon: 'keyboard-arrow-right'
-      },
-      {
-        title: 'IGTV Video',
-        icon: 'keyboard-arrow-right'
-      },
-      
-      ];
-      const storyHighlights = [
-        {image: require('./assets/reelbg.jpg'), highlightname: 'myfav'},
-        {image: require('./assets/reelbg.jpg'), highlightname: 'food'},
-        {image: require('./assets/reelbg.jpg'), highlightname: 'trip'},
-        {image: require('./assets/reelbg.jpg'), highlightname: 'college'},
-        {image: require('./assets/reelbg.jpg'), highlightname: 'nighrouts'},
-        {image: require('./assets/reelbg.jpg'), highlightname: 'study'},
-      ]
-        const keyExtractor = (item, index) => index.toString()
-      const renderItem = ({item}) => (
-        <ListItem containerStyle={{backgroundColor: '#ffffff'}}>
-            <ListItem.Content>
-                <ListItem.Title style={{color: '#000'}}>{item.title}</ListItem.Title>
-            </ListItem.Content>
-            <MaterialIcons name={item.icon} color= '#727272' size={26} />
-        </ListItem>
-      );
-    return(
-        <View style={styles.main}>
-            <View style={styles.tabbar}>
-              <AntDesign onPress={() => navigation.goBack() } name="arrowleft" color='#000' size={26} style={{padding: 10}}  />
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <Text style={styles.teeexts}>{ouname}</Text>
-              </View>
-              <View style={{flex: 1}}></View>
-              <MaterialComunityIcons name="dots-vertical" onPress={toggleBNavView} color='#000' size={28} style={{ paddingLeft: 10, paddingRight: 10}}  />
-            </View>
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-                <View style={styles.dpff}>
-                    <Image 
-                        style={styles.propic}
-                        source={{uri: propic}}
-                    />
-                    <View style={styles.pff}>
-                        <Text style={{fontWeight: 'bold', fontSize: 18, color: '#000'}}>{posts}</Text>
-                        <Text style={{color: '#000'}}>Posts</Text>
-                    </View>
-                    <View style={styles.pff}>
-                        <Text style={{fontWeight: 'bold', fontSize: 18, color: '#000'}}>{followers}</Text>
-                        <Text style={{color: '#000'}}>Followers</Text>
-                    </View>
-                    <View style={styles.pff}>
-                        <Text style={{fontWeight: 'bold', fontSize: 18, color: '#000'}}>{following}</Text>
-                        <Text style={{color: '#000'}}>Following</Text>
-                    </View>
-                    <View style={{padding: 6}}></View>
-                </View>
-                <View style={styles.bio}>
-                    <Text style={styles.myname}>{name}</Text>
-                    <View style={{flex:1,flexDirection: 'column'}}>
-                    <Text style={{color: '#000', fontWeight: '100'}}>{bio}</Text>
-                    </View>
-                </View>
-                
-                {isPrivate ? (
-                <>
-                <View style={{flexDirection: 'row'}}>
+  const list = [
+    {
+      title: 'Story',
+      icon: 'keyboard-arrow-right'
+    },
+    {
+      title: 'Story Highlight',
+      icon: 'keyboard-arrow-right'
+    },
+    {
+      title: 'IGTV Video',
+      icon: 'keyboard-arrow-right'
+    },
+
+  ];
+  const storyHighlights = [
+    {image: require('./assets/reelbg.jpg'), highlightname: 'myfav'},
+    {image: require('./assets/reelbg.jpg'), highlightname: 'food'},
+    {image: require('./assets/reelbg.jpg'), highlightname: 'trip'},
+    {image: require('./assets/reelbg.jpg'), highlightname: 'college'},
+    {image: require('./assets/reelbg.jpg'), highlightname: 'nighrouts'},
+    {image: require('./assets/reelbg.jpg'), highlightname: 'study'},
+  ]
+  const keyExtractor = (item, index) => index.toString()
+  const renderItem = ({item}) => (
+    <ListItem containerStyle={{backgroundColor: '#ffffff'}}>
+        <ListItem.Content>
+            <ListItem.Title style={{color: '#000'}}>{item.title}</ListItem.Title>
+        </ListItem.Content>
+        <MaterialIcons name={item.icon} color= '#727272' size={26} />
+    </ListItem>
+  );
+  return(
+    <View style={styles.main}>
+      <View style={styles.tabbar}>
+        <AntDesign onPress={() => navigation.goBack() } name="arrowleft" color='#000' size={26} style={{padding: 10}}  />
+        <View style={{flex: 1, flexDirection: 'row'}}>
+          <Text style={styles.teeexts}>{ouname}</Text>
+        </View>
+        <View style={{flex: 1}}></View>
+        <MaterialComunityIcons name="dots-vertical" onPress={toggleBNavView} color='#000' size={28} style={{ paddingLeft: 10, paddingRight: 10}}  />
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <View style={styles.dpff}>
+          <Image 
+            style={styles.propic}
+            source={{uri: propic}}
+          />
+          <View style={styles.pff}>
+            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#000'}}>{posts}</Text>
+            <Text style={{color: '#000'}}>Posts</Text>
+          </View>
+          <View style={styles.pff}>
+            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#000'}}>{followers}</Text>
+            <Text style={{color: '#000'}}>Followers</Text>
+          </View>
+          <View style={styles.pff}>
+            <Text style={{fontWeight: 'bold', fontSize: 18, color: '#000'}}>{following}</Text>
+            <Text style={{color: '#000'}}>Following</Text>
+          </View>
+          <View style={{padding: 6}}></View>
+        </View>
+        <View style={styles.bio}>
+          <Text style={styles.myname}>{name}</Text>
+          <View style={{flex:1,flexDirection: 'column'}}>
+          <Text style={{color: '#000', fontWeight: '100'}}>{bio}</Text>
+          </View>
+        </View>
+        { isFollowing === true || isPrivate === false ? (
+          <>
+            <View style={{flexDirection: 'row'}}>
+              {
+                isFollowing === true ? (
                   <TouchableOpacity style={styles.buttons} onPress={toggleBottomNavigationView}>
                     <Text style={{alignSelf: 'center', color: '#000',fontSize: 16}}>Following</Text>
                     <MaterialIcons name="keyboard-arrow-down" color='#000' size={17} style={{paddingLeft: 2}}  />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => navigation.navigate('ChatsScreen', {'propic': propic, 'username': username, 'newPerson': true})} style={styles.buttons}>
-                    <Text style={{alignSelf: 'center', color: '#000', fontSize: 16}}>Message</Text>
+                ) :
+                isRequested === true ? (
+                  <TouchableOpacity style={styles.buttons} >
+                    <Text style={{alignSelf: 'center', color: '#fff',fontSize: 16}}>Requested</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity 
-                  style={{alignSelf: 'center',
-                    backgroundColor: '#fff',
-                    padding: 3.5,
-                    borderRadius: 5,
-                    marginBottom: 15,
-                    borderWidth: 1.5,
-                    borderColor: '#e2e2e2',
-                    marginTop: 13,
-                    marginLeft: 10}}>
-                    <MaterialIcons name="keyboard-arrow-down" color='#000' size={17} style={{paddingLeft: 2}}  />
+                ) : (
+                  <TouchableOpacity style={[styles.followbuttons, {marginLeft: 15}]} onPress={sendFollow}>
+                    <Text style={{alignSelf: 'center', color: '#fff',fontSize: 16}}>Follow</Text>
                   </TouchableOpacity>
+                )
+              }
+              <TouchableOpacity onPress={() => navigation.navigate('ChatsScreen', {'propic': propic, 'username': username, 'newPerson': true})} style={styles.buttons}>
+                <Text style={{alignSelf: 'center', color: '#000', fontSize: 16}}>Message</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+              style={{alignSelf: 'center',
+                backgroundColor: '#fff',
+                padding: 3.5,
+                borderRadius: 5,
+                marginBottom: 15,
+                borderWidth: 1.5,
+                borderColor: '#e2e2e2',
+                marginTop: 13,
+                marginLeft: 10}}>
+                <MaterialIcons name="keyboard-arrow-down" color='#000' size={17} style={{paddingLeft: 2}}  />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.horiscroll} showsHorizontalScrollIndicator={false}
+            horizontal={true}>
+              {
+              storyHighlights.map((index) => {
+                return(
+                <View style={styles.circle} key={index.highlightname}>
+                    <Image style={styles.highl} source={index.image} />
+                    <Text style={{color: '#000'}}>{index.highlightname}</Text>
                 </View>
-                
-                  <ScrollView style={styles.horiscroll} showsHorizontalScrollIndicator={false}
-                  horizontal={true}>
-                    {
-                    storyHighlights.map((index) => {
-                      return(
-                      <View style={styles.circle} key={index.highlightname}>
-                          <Image style={styles.highl} source={index.image} />
-                          <Text style={{color: '#000'}}>{index.highlightname}</Text>
-                      </View>
-                      )
-                    })
-                  }
-                  </ScrollView>
-                  <View style={{borderTopColor: '#c7c7c7', borderTopWidth: 1, marginTop: 10}}>
-                    <Tab.Navigator
-                    tabBarOptions={{
-                        showLabel: false,
-                        showIcon: true,
-                        inactiveTintColor: '#c7c7c7',
-                        activeTintColor: '#000',
-                        style: {
-                            backgroundColor: '#f0f0f0',
-                        },
-                        indicatorStyle: {
-                            backgroundColor: '#000',
-                            height: 1
-                        }
-                    }}>
-                        <Tab.Screen 
-                            name="Grid" 
-                            component={GridPhotosScreen}
-                            options= {{
-                                tabBarIcon: ({ color }) => (
-                                    <MaterialComunityIcons name="grid" color={color} size={26} />
-                                ),
-                            }} />
-                        <Tab.Screen 
-                            name="Tags"
-                            component={PhotoTagSceen}
-                            options= {{
-                                tabBarIcon: ({ color }) => (
-                                    <MaterialComunityIcons name="tooltip-account" color={color} size={26} />
-                                ),
-                            }} />
-                    </Tab.Navigator>
-                  </View>
-                </>) : (
-                <>
-                  <TouchableOpacity style={[styles.followbuttons, {width: Dimensions.get('window').width-30,}]}>
-                    <Text style={{alignSelf: 'center', color: '#fff',fontSize: 16, textAlign: 'center'}}>Follow</Text>
-                  </TouchableOpacity>
-                  <Divider style={{marginTop: 15, marginBottom: 20}} />
-                  <View style={{flexDirection: 'row'}}>
-                    <View>
-                      <SimpleLineIcons name="lock" size={24} style={{borderRadius: 20, borderWidth: 1, padding: 6, margin: 10, color: '#727272', borderColor: '#727272'}} />
-                    </View>
-                    <View style={{flexDirection: 'column',flex: 1}}>
-                      <Text style={{fontWeight: 'bold'}}>This Account is Private</Text>
-                      <Text style={{color: '#727272'}}>Follow this account to see their photos and videos.</Text>
-                    </View>
-                  </View>
-                  <SuggestedForYou />
-                </>)}
+                )
+              })
+            }
             </ScrollView>
-            <BottomSheet
-            visible={visible}
-            onBackButtonPress={toggleBottomNavigationView}
-            onBackdropPress={toggleBottomNavigationView}>
-                <View style={styles.bsheet}>
-                    <View style={styles.bar}></View>
-                    <Text style={styles.teexts}>{username}</Text>
-                    <Divider style={{ backgroundColor: '#e2e2e2'}} />
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={{fontSize: 16, padding: 10, marginLeft: 5}}>Add to Close Friends List</Text>
-                  <View style={{flex: 1}}></View>
-                    <MaterialComunityIcons name="star-circle-outline" size={26} style={{padding: 10, marginRight: 7}} />
-                </View>
-                <View>
-                    <FlatList 
-                    keyExtractor={keyExtractor}
-                        data={list}
-                        renderItem={renderItem}
-                    />
-                </View>
-                <Text style={{fontSize: 16, color: '#ff5151', padding: 10, marginLeft: 5}}>Unfollow</Text>
-                </View>
-            </BottomSheet>
-            <BottomSheet
-            visible={BVisible}
-            onBackButtonPress={toggleBNavView}
-            onBackdropPress={toggleBNavView}>
-                <View style={styles.bsheet}>
-                  <View style={styles.bar}></View>
-                  <View>
-                    <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Report...</Text>
-                    <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Block</Text>
-                    <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Restrict</Text>
-                    <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Hide Your Stroy</Text>
-                    <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Copy Profile URL</Text>
-                    <Text style={styles.bsheetText} onPress={() => {navigation.navigate('ChatsScreen', {'propic': propic, 'username': username, 'newPerson': true}); toggleBNavView()}}>Send Message</Text>
-                    <Text style={styles.bsheetText} onPress={() => {console.log("pressed");  toggleBNavView()}}>Share this Profile</Text>
-                  </View>
-                </View>
-            </BottomSheet>
+            <View style={{borderTopColor: '#c7c7c7', borderTopWidth: 1, marginTop: 10}}>
+              <Tab.Navigator
+              tabBarOptions={{
+                showLabel: false,
+                showIcon: true,
+                inactiveTintColor: '#c7c7c7',
+                activeTintColor: '#000',
+                style: {
+                    backgroundColor: '#f0f0f0',
+                },
+                indicatorStyle: {
+                    backgroundColor: '#000',
+                    height: 1
+                }
+              }}>
+                <Tab.Screen 
+                  name="Grid" 
+                  component={GridPhotosScreen}
+                  options= {{
+                    tabBarIcon: ({ color }) => (
+                      <MaterialComunityIcons name="grid" color={color} size={26} />
+                    ),
+                  }} />
+                <Tab.Screen 
+                  name="Tags"
+                  component={PhotoTagSceen}
+                  options= {{
+                    tabBarIcon: ({ color }) => (
+                      <MaterialComunityIcons name="tooltip-account" color={color} size={26} />
+                    ),
+                  }} />
+              </Tab.Navigator>
+            </View>
+          </>) : (
+          <>
+            <TouchableOpacity style={[styles.followbuttons, {width: Dimensions.get('window').width-30,}]}>
+              <Text style={{alignSelf: 'center', color: '#fff',fontSize: 16, textAlign: 'center'}}>Follow</Text>
+            </TouchableOpacity>
+            <Divider style={{marginTop: 15, marginBottom: 20}} />
+            <View style={{flexDirection: 'row'}}>
+              <View>
+                <SimpleLineIcons name="lock" size={24} style={{borderRadius: 20, borderWidth: 1, padding: 6, margin: 10, color: '#727272', borderColor: '#727272'}} />
+              </View>
+              <View style={{flexDirection: 'column',flex: 1}}>
+                <Text style={{fontWeight: 'bold'}}>This Account is Private</Text>
+                <Text style={{color: '#727272'}}>Follow this account to see their photos and videos.</Text>
+              </View>
+            </View>
+            <SuggestedForYou />
+          </>)
+        }
+      </ScrollView>
+      <BottomSheet
+      visible={visible}
+      onBackButtonPress={toggleBottomNavigationView}
+      onBackdropPress={toggleBottomNavigationView}>
+          <View style={styles.bsheet}>
+              <View style={styles.bar}></View>
+              <Text style={styles.teexts}>{username}</Text>
+              <Divider style={{ backgroundColor: '#e2e2e2'}} />
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{fontSize: 16, padding: 10, marginLeft: 5}}>Add to Close Friends List</Text>
+            <View style={{flex: 1}}></View>
+              <MaterialComunityIcons name="star-circle-outline" size={26} style={{padding: 10, marginRight: 7}} />
+          </View>
+          <View>
+              <FlatList 
+              keyExtractor={keyExtractor}
+                  data={list}
+                  renderItem={renderItem}
+              />
+          </View>
+          <Text style={{fontSize: 16, color: '#ff5151', padding: 10, marginLeft: 5}}>Unfollow</Text>
+          </View>
+      </BottomSheet>
+      <BottomSheet
+        visible={BVisible}
+        onBackButtonPress={toggleBNavView}
+        onBackdropPress={toggleBNavView}
+        >
+        <View style={styles.bsheet}>
+          <View style={styles.bar}></View>
+          <View>
+            <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Report...</Text>
+            <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Block</Text>
+            <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Restrict</Text>
+            <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Hide Your Stroy</Text>
+            <Text style={styles.bsheetText} onPress={() => {console.log("pressed"); toggleBNavView()}}>Copy Profile URL</Text>
+            <Text style={styles.bsheetText} onPress={() => {navigation.navigate('ChatsScreen', {'propic': propic, 'username': username, 'newPerson': true}); toggleBNavView()}}>Send Message</Text>
+            <Text style={styles.bsheetText} onPress={() => {console.log("pressed");  toggleBNavView()}}>Share this Profile</Text>
+          </View>
         </View>
-      
-      
-    );
-  };
+      </BottomSheet>
+    </View>
+  );
+};
 
 export default OthersProfileScreen;
 
@@ -408,7 +490,7 @@ const styles = StyleSheet.create({
     buttons:{
       alignSelf: 'center',
       backgroundColor: '#fff',
-      padding: 3.5,
+      padding: 5,
       paddingLeft: 30,
       paddingRight: 30,
       borderRadius: 5,

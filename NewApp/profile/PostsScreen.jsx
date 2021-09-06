@@ -7,7 +7,7 @@ import { BottomSheet } from 'react-native-btr';
 import Feather from 'react-native-vector-icons/Feather';
 import { Divider } from 'react-native-elements';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { yourip } from '../helpers/keys';
 const PostsScreen = ({navigation}) => {
   // const { username } = route.params;
   const [notLiked, setLiked] = useState('hearto');
@@ -26,7 +26,7 @@ const PostsScreen = ({navigation}) => {
       const token = await AsyncStorage.getItem("token")
       // setUsername(token)
     
-      fetch('http://192.168.0.103:3000/', { //192.168.0.102
+      fetch(`http://${yourip}:3000/`, { 
         headers: new Headers({
           Authorization:"Bearer "+token
         })
@@ -43,7 +43,7 @@ const PostsScreen = ({navigation}) => {
   const [ allPosts, setAllPosts ] = useState(allPosts);
   useEffect(() => {
     async function getdata() {
-      fetch(`http://192.168.0.103:3000/uploads/posts/${username}`, { //192.168.0.102
+      fetch(`http://${yourip}:3000/uploads/posts/${username}`, {
         method: "GET"
       })
       .then(res => res.json())

@@ -8,32 +8,6 @@ import { StyleSheet,Text, TextInput, View, Dimensions, ScrollView, Platform,Touc
 import { NavigationContainer,  } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
-import SignupScreen from './SignupScreens/signup';
-import HomeScreen from './home';
-import MyDrawer from './BottomTab/profile';
-import InboxScreen from './inbox';
-import SearchScreen from './BottomTab/search';
-import SettingsScreen from './settings';
-import CameraScreen from './camera';
-import StoryScreen from './Story';
-import PrivacyScreen from './settingsTypes/privacy';
-import SecurityScreen from './settingsTypes/security';
-import ExploreScreen from './Explore';
-import EditProfileScreen from './EditProfile';
-import IGTVDiscoverScreen from './IGTVDiscover';
-import PersonalInfoScreen from './PersonalInfo';
-import RecomendedSearchesScreen from './RecSearches';
-import CameraSettingsScreen from './CameraSettings';
-import CloseFriendsScreen from './storysettings/CloseFriends';
-import HideStoryScreen from './storysettings/HideStoryFrom';
-import ChatsScreen from './Chats/ChatBox';
-import ChatDetailsScreen from './Chats/ChatDetailsScreen';
-import OthersProfileScreen from './OthersProfile';
-import FAndFScreen from './profile/FAndF';
-import ReelsScreen from './BottomTab/Reels';
-import ArchiveScreen from './SideDrawer/Archive';
-import LoadingScreen from './LoadingScreen'
-import Signin from './helpers/auths'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MainScreen from './MainScreen';
 import UsernameScreen from './SignupScreens/username';
@@ -104,7 +78,7 @@ const LoginScreen = ({ navigation }) => {
     fetch(`http://${yourip}:3000/signin`, {
     method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       "username": username,
